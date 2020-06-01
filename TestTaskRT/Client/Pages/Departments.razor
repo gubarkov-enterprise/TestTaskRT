@@ -1,0 +1,60 @@
+﻿@page "/departments"
+@using TestTaskRT.Shared.DAL
+@inherits DepartmentsComponent
+
+<h3>Departments</h3>
+<RadzenButton Click="@(() => DialogService.OpenAsync<CreateDepartmentDialog>("Create Department"))" Icon="control_point" Style="margin-bottom: 20px; width: 80px"/>
+
+@if (IsInitialized)
+{
+    <RadzenGrid @ref="DepartmentsGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+                 AllowSorting="true" Data="@Departments" TItem="TestTaskRT.Shared.DAL.DepartmentModel" ColumnWidth="200px">
+        <Columns>
+            <RadzenGridColumn TItem="TestTaskRT.Shared.DAL.DepartmentModel" Property="Title" Title="Title">
+                <EditTemplate Context="department">
+                    <RadzenTextBox @bind-Value="department.Title" Style="width: 100%; display: block" Name="Title"/>
+                </EditTemplate>
+            </RadzenGridColumn>
+
+            <RadzenGridColumn TItem="TestTaskRT.Shared.DAL.DepartmentModel" Property="Users" Title="Users">
+                <Template Context="data">
+                    @foreach (var user in data.Users)
+                    {
+                        <span>@($"{user.Name} {user.Surname}")</span>
+                    }
+                </Template>
+                <EditTemplate Context="department">
+                    @foreach (var user in department.Users)
+                    {
+                        <RadzenButton Text=@($"{user.Name} {user.Surname}") ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium" Click="@(args => DeleteUser(user.Id, department))">
+                        </RadzenButton>
+                    }
+                </EditTemplate>
+            </RadzenGridColumn>
+
+            <RadzenGridColumn TItem="TestTaskRT.Shared.DAL.DepartmentModel" Context="department" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+                <Template Context="department">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => EditRow(department))">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="department">
+                    <RadzenButton Icon="save" Size="ButtonSize.Small" Click="@((args) => SaveRow(department))">
+                    </RadzenButton>
+                    <RadzenButton Icon="cancel" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(department))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenGridColumn>
+
+            <RadzenGridColumn TItem="TestTaskRT.Shared.DAL.DepartmentModel" Context="department" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                <Template Context="department">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteDepartment(department))">
+                    </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
+}
+else
+{
+    <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px"/>
+}

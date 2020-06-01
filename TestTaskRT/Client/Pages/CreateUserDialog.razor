@@ -1,0 +1,63 @@
+﻿@using TestTaskRT.Shared.DAL
+@inherits CreateUserDialogComponent
+
+
+@if (Awaiting)
+{
+    <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px"/>
+}
+else
+{
+    <RadzenTemplateForm Data="@NewUser" Submit="@(async (CreateUserModel model) => { await Submit(model); })">
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenFieldset Text="New user">
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="@nameof(UserModel.Name)"/>
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox @bind-value="NewUser.User.Name" style="width: 100%;" Name="@nameof(UserModel.Name)"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="@nameof(UserModel.Surname)"/>
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox @bind-value="NewUser.User.Surname" style="width: 100%;" Name="@nameof(UserModel.Surname)"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Department"/>
+                        </div>
+                        <div class="col-md-8">
+                            @if (DepartmentsLoaded)
+                            {
+                                <RadzenDropDownDataGrid TValue="int" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" AllowClear="true"
+                                                        Data="Departments"
+                                                        TextProperty="Title" ValueProperty="Id" Style="margin-bottom: 20px"
+                                                        Change="@(Change)"/>
+                            }
+                            else
+                            {
+                                <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px"/>
+                            }
+                        </div>
+                    </div>
+                </RadzenFieldset>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                <RadzenButton Disabled="@(NewUser.DepartmentId == 0)" ButtonType="ButtonType.Submit" Icon="save" Text="Save"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel"/>
+            </div>
+        </div>
+    </RadzenTemplateForm>
+}
+
+<style>
+    div.row { margin-bottom: 5px; }
+</style>

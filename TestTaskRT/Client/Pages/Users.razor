@@ -1,0 +1,27 @@
+﻿@page "/users"
+@using TestTaskRT.Shared.DAL
+@inherits UsersComponent
+
+
+<h3>Users</h3>
+<RadzenButton Click="@(() => DialogService.OpenAsync<CreateUserDialog>("Create user"))" Icon="control_point" Style="margin-bottom: 20px; width: 80px"/>
+
+@if (IsInitialized)
+{
+    <RadzenGrid @ref="@Grid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+                 AllowSorting="true" Data="@Users" TItem="TestTaskRT.Shared.DAL.UserModel" ColumnWidth="200px">
+        <Columns>
+            <RadzenGridColumn TItem="TestTaskRT.Shared.DAL.UserModel" Property="Name" Title="@nameof(UserModel.Name)"/>
+            <RadzenGridColumn TItem="TestTaskRT.Shared.DAL.UserModel" Property="Surname" Title="@nameof(UserModel.Surname)"/>
+            <RadzenGridColumn TItem="TestTaskRT.Shared.DAL.UserModel" Property="Department" Title="@nameof(UserModel.Department)">
+                <Template Context="data">
+                    @data.Department.Title
+                </Template>
+            </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
+}
+else
+{
+    <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px"/>
+}
